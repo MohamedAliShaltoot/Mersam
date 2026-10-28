@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +45,7 @@ import com.example.trello.presentation.common.components.DueDatePickerDialog
 import com.example.trello.presentation.common.components.PrioritySelector
 import com.example.trello.presentation.common.components.formatDueDate
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,11 +97,15 @@ fun CardDetailScreen(
             return@Scaffold
         }
 
+        val scrollState = rememberScrollState()
+        val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .imePadding()
+                .verticalScroll(scrollState)
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -180,6 +186,30 @@ fun CardDetailScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            com.example.trello.presentation.common.components.ChecklistSection(
+                items = state.checklist,
+                onToggleItem = { itemId, isCompleted ->
+                    viewModel.onIntent(CardDetailContract.Intent.OnToggleChecklistItem(itemId, isCompleted))
+                },
+                onUpdateItem = { itemId, newTitle ->
+                    viewModel.onIntent(CardDetailContract.Intent.OnUpdateChecklistItem(itemId, newTitle))
+                },
+                onDeleteItem = { itemId ->
+                    viewModel.onIntent(CardDetailContract.Intent.OnDeleteChecklistItem(itemId))
+                },
+                onAddItem = { title ->
+                    viewModel.onIntent(CardDetailContract.Intent.OnAddChecklistItem(title))
+                },
+                onStartAdding = {
+                    coroutineScope.launch {
+                        kotlinx.coroutines.delay(120)
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                    }
+                }
+            )
 
             Spacer(modifier = Modifier.height(28.dp))
 

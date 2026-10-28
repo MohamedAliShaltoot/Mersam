@@ -1,6 +1,7 @@
 package com.example.trello.presentation.carddetail
 
 import com.example.trello.domain.model.Card
+import com.example.trello.domain.model.ChecklistItem
 import com.example.trello.domain.model.Priority
 
 object CardDetailContract {
@@ -15,6 +16,7 @@ object CardDetailContract {
         val isCompleted: Boolean = false,
         val labels: List<String> = emptyList(),
         val coverColor: String? = null,
+        val checklist: List<ChecklistItem> = emptyList(),
         val showDeleteDialog: Boolean = false,
         val showDatePicker: Boolean = false,
         val isDirty: Boolean = false
@@ -33,6 +35,10 @@ object CardDetailContract {
         data object OnToggleCompleted : Intent
         data class OnToggleLabel(val colorHex: String) : Intent
         data class OnCoverColorSelected(val colorHex: String?) : Intent
+        data class OnAddChecklistItem(val title: String) : Intent
+        data class OnUpdateChecklistItem(val itemId: Long, val title: String) : Intent
+        data class OnToggleChecklistItem(val itemId: Long, val isCompleted: Boolean) : Intent
+        data class OnDeleteChecklistItem(val itemId: Long) : Intent
         data object OnSaveClicked : Intent
         data object OnDeleteClicked : Intent
         data object OnDismissDeleteDialog : Intent

@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import com.example.trello.data.local.dao.ChecklistItemDao
+import com.example.trello.domain.model.ChecklistItem
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,6 +28,7 @@ class TrelloRepositoryImpl @Inject constructor(
     private val boardDao: BoardDao,
     private val listDao: CardListDao,
     private val cardDao: CardDao,
+    private val checklistItemDao: ChecklistItemDao,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : TrelloRepository {
 
@@ -164,5 +167,29 @@ class TrelloRepositoryImpl @Inject constructor(
             }
             cardDao.updateCard(card.copy(listId = targetListId, position = newPosition).toEntity())
         }
+    }
+
+    // Checklist Items
+
+    override fun observeChecklist(cardId: Long): Flow<List<ChecklistItem>> =
+        checklistItemDao.getChecklistForCard(cardId).map { items -> items.map { it.toDomain() } }
+
+    override suspend fun addChecklistItem(cardId: Long, title: String): Long = withContext(ioDispatcher) {
+        val nextPosition = (checklistItemDao.getMaxPosition(cardId) ?: 0.0) + 1.0
+        checklistItemDao.insertChecklistItem(
+            ChecklistItem(cardId = cardId, title = title, position = nextPosition).toEntity()
+        )
+    }
+
+    override suspend fun updateChecklistItem(item: ChecklistItem) = withContext(ioDispatcher) {
+        checklistItemDao.updateChecklistItem(item.toEntity())
+    }
+
+    override suspend fun toggleChecklistItem(itemId: Long, isCompleted: Boolean) = withContext(ioDispatcher) {
+        checklistItemDao.setCompleted(itemId, completed = isCompleted)
+    }
+
+    override suspend fun deleteChecklistItem(itemId: Long) = withContext(ioDispatcher) {
+        checklistItemDao.deleteChecklistItemById(itemId)
     }
 }

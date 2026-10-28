@@ -3,6 +3,7 @@ package com.example.trello.domain.repository
 import com.example.trello.domain.model.Board
 import com.example.trello.domain.model.BoardList
 import com.example.trello.domain.model.Card
+import com.example.trello.domain.model.ChecklistItem
 import kotlinx.coroutines.flow.Flow
 
 
@@ -34,4 +35,11 @@ interface TrelloRepository {
     suspend fun restoreCard(card: Card): Long
     suspend fun setCardCompleted(cardId: Long, completed: Boolean)
     suspend fun moveCard(card: Card, targetListId: Long, targetCardId: Long? = null, isTopHalf: Boolean = false)
+
+    // Checklist Items
+    fun observeChecklist(cardId: Long): Flow<List<ChecklistItem>>
+    suspend fun addChecklistItem(cardId: Long, title: String): Long
+    suspend fun updateChecklistItem(item: ChecklistItem)
+    suspend fun toggleChecklistItem(itemId: Long, isCompleted: Boolean)
+    suspend fun deleteChecklistItem(itemId: Long)
 }

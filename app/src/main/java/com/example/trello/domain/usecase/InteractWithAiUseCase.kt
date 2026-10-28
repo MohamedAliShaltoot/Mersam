@@ -23,7 +23,7 @@ class InteractWithAiUseCase @Inject constructor(
             // Action Detection (Structured Output)
             // We give the AI a strict instruction to create a board if the user asks for it.
             val systemPrompt = """
-                You are a helpful project management AI assistant in a Trello-like app.
+                You are a helpful project management AI assistant in Mersam, an intuitive Kanban board application.
                 $boardsContext
                 
                 The user says: "$prompt"

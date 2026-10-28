@@ -51,6 +51,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.example.trello.domain.model.Card as TrelloCard
 import com.example.trello.domain.model.Priority
 import com.example.trello.presentation.common.components.DueDateChip
@@ -58,9 +60,9 @@ import com.example.trello.presentation.common.components.PriorityChip
 import com.example.trello.presentation.common.components.toComposeColor
 import com.example.trello.presentation.board.components.draganddrop.LocalDragDropState
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
- fun CardItem(
+fun CardItem(
     card: TrelloCard,
     onClick: () -> Unit,
     onToggleComplete: () -> Unit,
@@ -222,7 +224,7 @@ import com.example.trello.presentation.board.components.draganddrop.LocalDragDro
                             },
                             leadingIcon = {
                                 Icon(
-                                    Icons.Default.DriveFileMove,
+                                    Icons.AutoMirrored.Filled.DriveFileMove,
                                     contentDescription = null
                                 )
                             },
@@ -256,15 +258,23 @@ import com.example.trello.presentation.board.components.draganddrop.LocalDragDro
                 }
             }
 
-            if (card.priority != Priority.NONE || card.dueDate != null) {
-                Row(
+            if (card.priority != Priority.NONE || card.dueDate != null || card.hasChecklist) {
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 34.dp, top = 2.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.padding(start = 34.dp, top = 4.dp, end = 4.dp)
                 ) {
-                    PriorityChip(card.priority)
+                    if (card.priority != Priority.NONE) {
+                        PriorityChip(card.priority)
+                    }
                     card.dueDate?.let { due ->
                         DueDateChip(dueDateMillis = due, isOverdue = card.isOverdue)
+                    }
+                    if (card.hasChecklist) {
+                        com.example.trello.presentation.common.components.ChecklistBadge(
+                            completed = card.checklistCompletedCount,
+                            total = card.checklistTotalCount
+                        )
                     }
                 }
             }

@@ -8,6 +8,12 @@ The project focuses on creating a fluid, intuitive board experience where users 
 
 ---
 
+## 📖 Detailed Guides & Documentation
+* 📋 **[Complete Screen Flow & Architecture Walkthrough](APP_FLOW_DOCUMENTATION.md)**: Full screen-by-screen breakdown, buttons, gestures, drag & drop mechanics, and Room database flow.
+* 🤖 **[AI Bot Integration Documentation](AI_DOCUMENTATION.md)**: Details on the Google Gemini SDK setup, system prompting, JSON action execution, and API key configurations.
+
+---
+
 ## ✨ Highlights
 
 The project goes beyond basic CRUD functionality and focuses heavily on **interaction design, architecture, and user experience**.

@@ -20,6 +20,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -160,12 +161,20 @@ fun ListColumn(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                IconButton(onClick = { showDeleteListDialog = true }, modifier = Modifier.size(32.dp)) {
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.error.copy(alpha = 0.08f))
+                        .clickable { showDeleteListDialog = true },
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete list",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(15.dp)
                     )
                 }
             }

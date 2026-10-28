@@ -64,6 +64,12 @@ class CardDetailViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+
+        repository.observeChecklist(cardId)
+            .onEach { items ->
+                _state.update { it.copy(checklist = items) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onIntent(intent: Intent) {
@@ -112,6 +118,39 @@ class CardDetailViewModel @Inject constructor(
             is Intent.OnCoverColorSelected -> {
                 _state.update { it.copy(coverColor = intent.colorHex) }
                 persistPatch { it.copy(coverColor = intent.colorHex) }
+            }
+
+            is Intent.OnAddChecklistItem -> {
+                if (intent.title.isNotBlank()) {
+                    viewModelScope.launch {
+                        repository.addChecklistItem(cardId, intent.title.trim())
+                    }
+                }
+            }
+
+            is Intent.OnUpdateChecklistItem -> {
+                if (intent.title.isNotBlank()) {
+                    viewModelScope.launch {
+                        val currentItem = _state.value.checklist.find { it.id == intent.itemId }
+                        if (currentItem != null) {
+                            repository.updateChecklistItem(
+                                currentItem.copy(title = intent.title.trim())
+                            )
+                        }
+                    }
+                }
+            }
+
+            is Intent.OnToggleChecklistItem -> {
+                viewModelScope.launch {
+                    repository.toggleChecklistItem(intent.itemId, intent.isCompleted)
+                }
+            }
+
+            is Intent.OnDeleteChecklistItem -> {
+                viewModelScope.launch {
+                    repository.deleteChecklistItem(intent.itemId)
+                }
             }
 
             Intent.OnSaveClicked -> {

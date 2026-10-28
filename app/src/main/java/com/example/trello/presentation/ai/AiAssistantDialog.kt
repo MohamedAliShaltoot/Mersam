@@ -70,7 +70,7 @@ fun AiAssistantDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Trello AI Assistant",
+                            text = "Mersam AI Assistant",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )

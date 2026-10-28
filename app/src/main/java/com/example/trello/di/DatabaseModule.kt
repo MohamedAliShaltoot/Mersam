@@ -33,4 +33,8 @@ object DatabaseModule {
 
     @Provides
     fun provideCardDao(database: TrelloDatabase): CardDao = database.cardDao()
+
+    @Provides
+    fun provideChecklistItemDao(database: TrelloDatabase): com.example.trello.data.local.dao.ChecklistItemDao =
+        database.checklistItemDao()
 }

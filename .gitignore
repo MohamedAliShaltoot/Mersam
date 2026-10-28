@@ -17,3 +17,15 @@ local.properties
 build/
 *.iml
 build_output.txt
+
+# Sensitive & Configuration Files
+google-services.json
+*google-services.json
+GoogleService-Info.plist
+*.keystore
+*.jks
+*.key
+signing.properties
+secrets.properties
+.env
+.env.*
